@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "primary_source_entry",
+  "title": "Primary Source Entry",
+  "description": "Schema for a single primary source in the DH Material Passport corpus",
+  "type": "object",
+  "required": ["id", "title", "source_type", "repository", "date_range"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "source_type": {
+      "type": "string",
+      "enum": ["newspaper", "manuscript", "printed_book", "pamphlet", "government_document", "photograph", "map", "audio", "video", "digital_born", "correspondence", "diary", "other"]
+    },
+    "repository": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "description": "e.g. Chronicling America, HathiTrust, British Newspaper Archive" },
+        "collection": { "type": "string" },
+        "item_id": { "type": "string", "description": "Repository-specific identifier" },
+        "url": { "type": "string", "format": "uri" },
+        "access_date": { "type": "string", "format": "date" }
+      }
+    },
+    "date_range": {
+      "type": "object",
+      "properties": {
+        "start": { "type": "string", "description": "ISO date or partial date (e.g. 1850, 1850-03)" },
+        "end": { "type": "string" }
+      }
+    },
+    "geographic_origin": {
+      "type": "object",
+      "properties": {
+        "country": { "type": "string" },
+        "region": { "type": "string" },
+        "city": { "type": "string" }
+      }
+    },
+    "language": { "type": "string", "description": "BCP-47 language code" },
+    "digitization": {
+      "type": "object",
+      "properties": {
+        "digitizing_institution": { "type": "string" },
+        "digitization_year": { "type": "integer" },
+        "resolution_dpi": { "type": "integer" },
+        "ocr_performed": { "type": "boolean" },
+        "ocr_engine": { "type": "string", "description": "e.g. Tesseract, ABBYY FineReader" },
+        "ocr_accuracy_estimate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Character accuracy rate 0.0–1.0. Estimate from sample if unknown."
+        },
+        "ocr_accuracy_method": {
+          "type": "string",
+          "enum": ["reported_by_archive", "manual_sample", "automated_evaluation", "unknown"]
+        },
+        "manual_correction_applied": { "type": "boolean" }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "properties": {
+        "copyright_status": {
+          "type": "string",
+          "enum": ["public_domain", "rights_managed", "in_copyright", "unknown", "creative_commons"]
+        },
+        "license": { "type": "string" },
+        "use_restrictions": { "type": "string" }
+      }
+    },
+    "provenance_notes": {
+      "type": "string",
+      "description": "Any known chain of custody, authenticity questions, or archival gaps"
+    },
+    "usability_assessment": {
+      "type": "string",
+      "enum": ["full_text_mining", "partial_text_mining", "keyword_only", "manual_only", "unusable"],
+      "description": "Based on OCR quality thresholds from dh_methodology_spectrum.md"
+    },
+    "included_in_corpus": { "type": "boolean" },
+    "exclusion_reason": { "type": "string" }
+  }
+}

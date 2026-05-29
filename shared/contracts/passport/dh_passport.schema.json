@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "dh_passport",
+  "title": "DH Material Passport",
+  "description": "Cross-session state object for a DH research project. Tracks all sources, corpus entries, tools, and supervision history.",
+  "type": "object",
+  "required": ["project_id", "created_at", "updated_at", "project_title"],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Unique identifier for this research project (slug format)"
+    },
+    "project_title": {
+      "type": "string",
+      "description": "Working title of the research project"
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "pipeline_stage": {
+      "type": "string",
+      "enum": ["1-explore","2-propose","2.5-ethics-gate","3-methodology","4-write","4.5-integrity-gate","5-review","5.5-supervisor","6-revise","6.5-final-gate","7-finalize","8-document"],
+      "description": "Current stage in the dh-pipeline"
+    },
+    "gates_passed": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["ethics","integrity","final"] },
+      "description": "Mandatory gates that have been completed"
+    },
+    "research_question": {
+      "type": "string",
+      "description": "The current formulation of the primary research question"
+    },
+    "methodology_orientation": {
+      "type": "string",
+      "enum": ["computational", "interpretive", "hybrid"],
+      "description": "Position on the DH methodology spectrum"
+    },
+    "literature_corpus": {
+      "type": "array",
+      "description": "Secondary sources — CSL-JSON format",
+      "items": { "$ref": "#/definitions/csl_entry" }
+    },
+    "primary_source_corpus": {
+      "type": "array",
+      "description": "Primary sources with provenance metadata",
+      "items": { "$ref": "primary_source_entry.schema.json" }
+    },
+    "digital_archive_refs": {
+      "type": "array",
+      "description": "Digital archive collections consulted",
+      "items": {
+        "type": "object",
+        "required": ["archive_name", "collection_name", "url"],
+        "properties": {
+          "archive_name": { "type": "string" },
+          "collection_name": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "access_date": { "type": "string", "format": "date" },
+          "api_used": { "type": "boolean" },
+          "item_count": { "type": "integer" },
+          "license": { "type": "string" }
+        }
+      }
+    },
+    "dataset_refs": {
+      "type": "array",
+      "description": "Datasets used in computational analysis",
+      "items": {
+        "type": "object",
+        "required": ["name", "source"],
+        "properties": {
+          "name": { "type": "string" },
+          "source": { "type": "string" },
+          "version": { "type": "string" },
+          "doi": { "type": "string" },
+          "access_date": { "type": "string", "format": "date" },
+          "record_count": { "type": "integer" },
+          "license": { "type": "string" }
+        }
+      }
+    },
+    "tool_refs": {
+      "type": "array",
+      "description": "Software tools used in the research workflow",
+      "items": {
+        "type": "object",
+        "required": ["name", "version"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "citation": { "type": "string" },
+          "purpose": { "type": "string" }
+        }
+      }
+    },
+    "supervision_log": {
+      "type": "array",
+      "description": "Timestamped supervisor/advisor feedback rounds",
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "feedback_type", "raw_feedback"],
+        "properties": {
+          "timestamp": { "type": "string", "format": "date-time" },
+          "feedback_type": { "type": "string", "enum": ["supervisor","peer_review","committee","self"] },
+          "raw_feedback": { "type": "string" },
+          "parsed_priorities": {
+            "type": "object",
+            "properties": {
+              "must_fix": { "type": "array", "items": { "type": "string" } },
+              "should_fix": { "type": "array", "items": { "type": "string" } },
+              "consider": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "resolved": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "csl_entry": {
+      "type": "object",
+      "required": ["id", "type", "title"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "author": { "type": "array", "items": { "type": "object" } },
+        "issued": { "type": "object" },
+        "DOI": { "type": "string" },
+        "URL": { "type": "string" }
+      }
+    }
+  }
+}

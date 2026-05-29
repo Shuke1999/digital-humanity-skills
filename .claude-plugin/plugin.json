@@ -1,0 +1,17 @@
+{
+  "name": "digital-humanity-skills",
+  "version": "1.0.0",
+  "description": "Full research lifecycle pipeline for digital humanities: research question → corpus building → writing → peer review → submission. 5 skills, 33 modes, 36-agent ensemble. Supports undergrad through faculty; bridges computational methods with humanistic inquiry.",
+  "author": {
+    "name": "Digital Humanity Skills Contributors",
+    "url": "https://github.com/digital-humanity-skills"
+  },
+  "homepage": "https://github.com/digital-humanity-skills",
+  "repository": "https://github.com/digital-humanity-skills",
+  "license": "CC-BY-NC-4.0",
+  "keywords": [
+    "digital-humanities", "dh", "research", "writing", "thesis",
+    "grant-proposal", "peer-review", "archives", "bibliography",
+    "corpus", "close-reading", "text-analysis"
+  ]
+}

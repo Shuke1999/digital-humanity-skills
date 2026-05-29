@@ -1,0 +1,45 @@
+{
+  "name": "digital-humanity-skills",
+  "owner": {
+    "name": "Digital Humanity Skills Contributors",
+    "url": "https://github.com/digital-humanity-skills"
+  },
+  "description": "A Claude Code plugin suite for digital humanities researchers and students. Guides the full research lifecycle from archive discovery through dissertation writing and journal submission.",
+  "plugins": [
+    {
+      "name": "dh-explore",
+      "source": "./dh-explore",
+      "description": "Research question development, archive survey, primary source criticism, corpus building, literature review",
+      "version": "1.0.0",
+      "license": "CC-BY-NC-4.0"
+    },
+    {
+      "name": "dh-write",
+      "source": "./dh-write",
+      "description": "All DH writing types: proposals, thesis chapters, journal articles, grant applications, reviewer response letters",
+      "version": "1.0.0",
+      "license": "CC-BY-NC-4.0"
+    },
+    {
+      "name": "dh-review",
+      "source": "./dh-review",
+      "description": "Multi-perspective peer review simulation (technical + humanistic + interdisciplinary) and supervisor feedback parsing",
+      "version": "1.0.0",
+      "license": "CC-BY-NC-4.0"
+    },
+    {
+      "name": "dh-refs",
+      "source": "./dh-refs",
+      "description": "Citation and reference management: import Zotero/.bib/.ris, build annotated bibliographies, gap analysis",
+      "version": "1.0.0",
+      "license": "CC-BY-NC-4.0"
+    },
+    {
+      "name": "dh-pipeline",
+      "source": "./dh-pipeline",
+      "description": "Full 13-stage lifecycle orchestrator with integrity gates, supervision checkpoints, and DH Material Passport",
+      "version": "1.0.0",
+      "license": "CC-BY-NC-4.0"
+    }
+  ]
+}

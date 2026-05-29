@@ -1,0 +1,135 @@
+# DH Plugin Suite — Architecture
+
+## Overview
+
+Four Claude Code skills + shared resources, all in markdown. No code to compile. Skills are prompt documents that direct Claude's behavior; agents are modular prompt components that SKILL.md files dispatch to.
+
+---
+
+## Skill Interaction Model
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       dh-pipeline                           │
+│   Orchestrates the full lifecycle;                          │
+│   dispatches to the three skills below;                     │
+│   manages the DH Material Passport as state.                │
+└──────────────┬───────────────┬───────────────┬─────────────┘
+               │               │               │
+        ┌──────▼───┐    ┌──────▼──┐    ┌──────▼──────┐
+        │dh-explore│───▶│dh-write │───▶│  dh-review  │
+        │(discover)│    │ (draft) │◀───│ (feedback)  │
+        └──────────┘    └─────────┘    └─────────────┘
+               │               │               │
+               └───────────────┴───────────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │  shared/references  │
+                    │  shared/contracts   │
+                    │  shared/templates   │
+                    └─────────────────────┘
+```
+
+---
+
+## SKILL.md Dispatch Model
+
+Each skill's SKILL.md is a routing document that:
+1. Reads the mode keyword
+2. Tells Claude to `Read` the appropriate agent file(s)
+3. Executes the agent(s) in order
+
+Agent files are self-contained prompt documents. They do not call each other directly — the SKILL.md manages the sequence. This means:
+- Each agent can be invoked individually for debugging
+- The routing logic is in SKILL.md, not scattered across agents
+- Adding a new agent requires only: create the file + add a line to SKILL.md's routing table
+
+---
+
+## Handoff Artifact Protocol
+
+Skills communicate through structured text artifacts — blocks with specific header signatures that the downstream skill's intake agent scans for.
+
+| Artifact | Header Signature | Produced By | Consumed By |
+|---|---|---|---|
+| dh-explore Output Package | `## Research Question Brief` | dh-explore → research_question_agent | dh-write intake |
+| Draft | `## Draft Complete` | dh-write → draft_writer_agent | dh-review intake |
+| Reviewer Decision | `## Reviewer Decision` | dh-review | dh-write revision mode |
+| Revision Roadmap | `## Revision Roadmap` | dh-review / dh-write revision_coach | dh-write revision mode |
+| DH Material Passport | `## DH Material Passport` | dh-pipeline passport agent | dh-pipeline state_tracker |
+
+---
+
+## Shared Resources
+
+Shared files are referenced by relative paths from within each skill's agents:
+- `../../shared/references/[file]` from within `dh-explore/agents/`
+- `../shared/references/[file]` from within a top-level skill SKILL.md
+
+This relative reference model means the suite is relocatable — move the `digital-humanity-skills/` directory and all internal references still work.
+
+---
+
+## File Dependency Graph
+
+```
+plugin.json
+  └── registers dh-explore, dh-write, dh-review, dh-pipeline
+
+CLAUDE.md
+  └── routing rules
+  └── references shared/references/ (intent_clarification_protocol, anti_leakage)
+
+dh-explore/SKILL.md
+  └── → agents/ (10 agents)
+  └── → references/ (3 refs, 1 mirrors shared)
+  └── → ../../shared/references/dh_methodology_spectrum.md
+  └── → ../../shared/references/intent_clarification_protocol.md
+  └── → ../../shared/references/anti_leakage_protocol.md
+
+dh-write/SKILL.md
+  └── → agents/ (12 agents)
+  └── → templates/ (5 templates)
+  └── → references/ (3 refs)
+  └── agents/revision_coach_agent.md
+      └── → ../../shared/references/supervisor_feedback_parsing_protocol.md
+  └── agents/citation_agent.md
+      └── → ../references/citation_styles_dh.md
+
+dh-review/SKILL.md
+  └── → agents/ (6 agents)
+  └── → references/ (3 refs)
+  └── agents/supervisor_feedback_agent.md
+      └── → ../../shared/references/supervisor_feedback_parsing_protocol.md
+
+dh-pipeline/SKILL.md
+  └── → agents/ (5 agents)
+  └── → references/ (1 ref — pipeline_stages_guide)
+  └── agents/integrity_verification_agent.md
+      └── → ../../shared/references/dh_ethics_protocol.md
+  └── agents/material_passport_agent.md
+      └── → ../../shared/contracts/passport/dh_passport.schema.json
+      └── → ../../shared/contracts/passport/primary_source_entry.schema.json
+```
+
+---
+
+## The Supervisor Feedback Parsing Protocol
+
+This is the one piece of logic shared directly between two skills (dh-write and dh-review). The protocol lives at `shared/references/supervisor_feedback_parsing_protocol.md` and is referenced by:
+- `dh-write/agents/revision_coach_agent.md`
+- `dh-review/agents/supervisor_feedback_agent.md`
+
+Both agents produce the same Revision Roadmap format, ensuring that roadmaps generated by either skill are accepted by `dh-write revision` mode.
+
+---
+
+## Design Decisions
+
+**Why markdown, not code?** Skills are instructions to Claude, not software. Markdown is readable, editable, and versionable without a build step. The "code" is Claude's reasoning.
+
+**Why separate agent files rather than one large SKILL.md?** Modularity: individual agents can be debugged, updated, or replaced without touching the routing logic. A researcher studying a specific agent's behavior can read just that file.
+
+**Why a Material Passport?** Claude has no persistent memory across sessions. The passport is the only durable state. All architectural decisions flow from this: the passport must be complete enough that any session can resume without prior context.
+
+**Why mandatory gates?** DH research integrity failures (fabricated citations, undisclosed OCR quality, unresolved reviewer comments) are common and consequential. The gates enforce a minimum standard before submission — not as bureaucracy, but as scholarly discipline.
