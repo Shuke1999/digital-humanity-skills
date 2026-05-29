@@ -15,8 +15,9 @@ Single source of truth for all modes across all five skills.
 | `methodology-guide` | `/dh-explore methodology-guide` | intake → methodology_advisor_agent | Methodology Blueprint | Low |
 | `lit-review-humanities` | `/dh-explore lit-review-humanities` | intake → humanities_literature_agent | Humanities Literature Review Brief | Low |
 | `lit-review-technical` | `/dh-explore lit-review-technical` | intake → technical_literature_agent | Technical Literature Review Brief | Low |
+| `framework` | `/dh-explore framework` | intake → framework_architect_agent | Research Framework Map (Mermaid diagram + venue-specific paper structure) | Low — requires RQ and target venue |
 
-**Handoff output**: dh-explore Output Package (RQ Brief + Methodology Blueprint + Corpus Manifest + Literature Briefs + Research Framework)
+**Handoff output**: dh-explore Output Package (RQ Brief + Methodology Blueprint + Corpus Manifest + Literature Briefs + Research Framework + **Research Framework Map**)
 
 ---
 
@@ -98,6 +99,8 @@ Single source of truth for all modes across all five skills.
 | `/dh-pipeline` | dh-pipeline, full mode |
 | "help me find archives" | dh-explore, archive-survey |
 | "help me choose a method" | dh-explore, methodology-guide |
+| "what methods / how should I structure my paper / build a research framework" | dh-explore, framework |
+| "topic modeling / NER / sentiment analysis for my project" | dh-explore, framework |
 | "help me write my proposal" | dh-write, proposal |
 | "help me write a grant" | dh-write, grant-proposal |
 | "help me outline my article" | dh-write, outline |

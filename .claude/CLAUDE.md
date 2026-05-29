@@ -10,6 +10,8 @@
 | `/dh-refs` | dh-refs SKILL.md |
 | `/dh-pipeline` | dh-pipeline SKILL.md |
 | "I want to research [DH topic]" | dh-explore intake_agent |
+| "what methods should I use / how should I structure my paper" | dh-explore framework mode |
+| "topic modeling / sentiment analysis / word frequency / NER [for my project]" | dh-explore framework mode |
 | "Help me write [paper type]" | dh-write intake_agent |
 | "Review my paper / give feedback" | dh-review intake_agent |
 | "bibliography / references / Zotero / .bib / annotated bibliography" | dh-refs intake_agent |
@@ -42,6 +44,7 @@ Downstream skills detect upstream output by looking for these section headers:
 | Upstream Output Contains | Downstream Skill |
 |---|---|
 | `## Research Question Brief` + `## Methodology Blueprint` | → dh-write intake_agent |
+| `## Research Framework Map` | → dh-write intake_agent (auto-sets paper type + venue structure) |
 | `## Corpus Manifest` | → dh-refs intake_agent OR dh-write intake_agent OR dh-pipeline |
 | `## DH Bibliography Corpus (CSL-JSON)` | → dh-write citation_agent (auto-import) |
 | `## Annotated Bibliography` | → dh-write (ready to cite) |
